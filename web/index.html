@@ -1,0 +1,523 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 20px;  
+      padding-bottom: 0.25in;  
+      padding-left: 20px;  
+    }
+    div.space {  
+      padding-top: 20px;  
+      padding-right: 0px;  
+      padding-bottom: 0.25in;  
+      padding-left: 0px;  
+    }
+    div.head {  
+      background-color: #F8F9F9; 
+      padding-top: 10px;  
+      padding-right: 50px;  
+      padding-bottom: 10px;  
+      padding-left: 50px; 
+    }  
+    div.parts {  
+      background-color: #F8F9F9; 
+      padding-top: 25px;  
+      padding-right: 50px;  
+      padding-bottom: 0.25in;  
+      padding-left: 50px; 
+    } 
+    div.break {
+        height: 1px;
+        background-color: #D6DBDF
+    }
+    h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    font-style: bold;
+    font-variant: normal;
+    font-weight: 600;
+    line-height: 26.4px;
+    color: #434343;
+    } 
+    h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    color: #696969;
+    line-height: 26.4px;
+    } 
+    h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    font-style: bold;
+    font-variant: bold;
+    font-weight: 520;
+    line-height: 26.4px;
+    color: #434343;
+    height: 10px;
+    } 
+    p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: #696969;
+    }
+    figcaption {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: #434343;
+    }
+    body {
+        background-color: #F2F3F4;
+    }
+
+  </style> 
+<title>Annalise Hurst  |  CS 194-26</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+    <div class="padded">
+        <div class="head">
+            <h1 align="left">Programming Project #4: Seam Carving</h1>
+            <h3 align="left">by Annalise Hurst: CS 194-26 Fall 2016</h3>
+        </div>
+    <div class="space"></div>
+    <div class="parts">
+        <h2 align="left">Overview</h2>
+            <div class="break"></div>
+            <p>Seam carving is the process of shrinking an image horizontally or vertically by removing seams of an image that have the lowest energy in the image. This preserves the rectangular shape of the image while avoiding jagged artifacts caused by removing columns or rows. This technique was published in a SIGGRAPH paper "Seam Carving for Content-Aware Image Resizing" by Shai Avidan and Ariel Shamir. In this project I implemented the basic seam carving algorithm and some other processes that build upon it.</p>
+            <div class="space"></div>
+
+        <h2 align="left">Horizontal Carving</h2>
+            <div class="break"></div>
+            <p>To implement the seam carving algorithm I started with horizontal carving. To find the seams with the lowest energy in the image I first assigned each pixel with an "importance" by applying an energy function to the image. The energy function I chose was the sum of the x and y gradients of the image. After computing the "energy" for each pixel I used dynamic programming to find the path from the top of the image to the bottom with the least cost. This produces a horizontal seam which can then be removed from the image to reduce the image's width. This process is repeated until the new desired width is acquired.</p> 
+            <p>Here are some examples of horizontal seams.</p>
+            <!-- Seams -->
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/1hseam.jpg" width="300px" />
+                        <figcaption align="middle">1 Horizontal Seam</figcaption>
+                        <td align="right">
+                        <img src="img/100hseams.jpg" width="300px" />
+                        <figcaption align="middle">100 Horizontal Seams</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <!-- Gif -->
+            <p>These gifs can be used to compare the low energy horizontal seams being found and removed from the images.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/h.gif" width="200px" />
+                        <figcaption align="middle">Low Energy Seams</figcaption>
+                        <td align="right">
+                        <img src="img/hi.gif" width="200px"/>
+                        <figcaption align="middle">Resulting Image</figcaption>
+                     </tr>
+                </table>
+            </div> 
+            <p>Here are some examples of images I applied this algorithm to.</p>
+            <!-- Finals -->
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/grand.jpg" width="300px" />
+                        <figcaption align="middle">Grand Canyon: 653 X 490</figcaption>
+                        <td align="right">
+                        <img src="img/img100.jpg" width="255px"/>
+                        <figcaption align="middle">Grand Canyon: 553 × 490</figcaption>
+                     </tr>
+                </table>
+            </div> 
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/camp.jpg" width="300px" />
+                        <figcaption align="middle">UC Berkeley Campanile: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/camp2.jpg" width="270px"/>
+                        <figcaption align="middle">UC Berkeley Campanile: 440 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/clif.jpg" width="300px" />
+                        <figcaption align="middle">Clif: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/clif2.jpg" width="240px"/>
+                        <figcaption align="middle">Clif: 390 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/clif3.jpg" width="185px"/>
+                        <figcaption align="middle">Clif: 300 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/puz.jpg" width="300px" />
+                        <figcaption align="middle">Puzzle Pieces: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/puz2.jpg" width="240px"/>
+                        <figcaption align="middle">Puzzle Pieces: 390 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/puz3.jpg" width="185px"/>
+                        <figcaption align="middle">Puzzle Pieces: 300 × 653</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div class="space"></div>   
+
+        <h2 align="left">Vertical Carving</h2>
+            <div class="break"></div>
+            <p>Vertical carving removes low energy vertical seams from an image to decrease the hight. After implementing horizontal carving, vertical carving was a simple task. To implement vertical carving I rotated the image 90 degrees, applied the horizontal carving algorithm, and then rotated it back.</p>
+            <p>Here are some examples of vertical seams.</p>
+            <!-- Seams -->
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/1vseam.jpg" width="300px" />
+                        <figcaption align="middle">1 Vertical Seam</figcaption>
+                        <td align="right">
+                        <img src="img/100vseams.jpg" width="300px" />
+                        <figcaption align="middle">100 Vertical Seams</figcaption>
+                     </tr>
+                </table>
+            </div> 
+            <!-- Gif -->
+            <p>These gifs can be used to compare the low energy vertical seams being found and removed from the images.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/v.gif" width="200px" />
+                        <figcaption align="middle"></figcaption>
+                        <td align="right">
+                        <img src="img/vi.gif" width="200px"/>
+                        <figcaption align="middle"></figcaption>
+                     </tr>
+                </table>
+            </div> 
+            <!-- Finals -->
+            <p>Here are some examples of images I applied this algorithm to.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/cat.jpg" width="300px" />
+                        <figcaption align="middle">Money Penny: 653 × 490</figcaption>
+                        <td align="right">
+                        <img src="img/cat2.jpg" width="300px"/>
+                        <figcaption align="middle">MOney Penny: 653 × 390</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/tj.jpg" width="300px" />
+                        <figcaption align="middle">TJ: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/tj2.jpg" width="300px"/>
+                        <figcaption align="middle">TJ: 490 × 553</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/grand.jpg" width="300px" />
+                        <figcaption align="middle">Grand Canyon: 653 × 490</figcaption>
+                        <td align="right">
+                        <img src="img/grandv2.jpg" width="300px"/>
+                        <figcaption align="middle">Grand Canyon: 653 × 390</figcaption>
+                        <td align="right">
+                        <img src="img/grandv3.jpg" width="300px"/>
+                        <figcaption align="middle">Grand Canyon: 653 × 300</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/puz.jpg" width="300px" />
+                        <figcaption align="middle">Puzzle Pieces: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/puzv2.jpg" width="300px"/>
+                        <figcaption align="middle">Puzzle Pieces: 490 × 553</figcaption>
+                        <td align="right">
+                        <img src="img/puzv3.jpg" width="300px"/>
+                        <figcaption align="middle">Puzzle Pieces: 490 × 500</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div class="space"></div>
+
+        <h2 align="left">Image Expansion</h2>
+            <div class="break"></div>
+            <p>Another application for seam carving is expanding images. To Implement this function, instead of removing the low energy seams, I replaced them by two seams which were the average of the low energy seam and the seam to the left of it and the average of the low energy seam and the seam to the right of it. This can be applied in both the horizontal and vertical directions. Since with the normal algorithm the same seam would be chosen as the lowest energy seam the k lowest seams are chosen and then the new seams are added. k is the difference between the original width/height and the desired width/height.</p>
+            <p>Here are some images expanded using horizontal expansion.</p>   
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/cute.jpg" width="300px" />
+                        <figcaption align="middle">Cat Hug: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/cute2.jpg" width="330px"/>
+                        <figcaption align="middle">Cat Hug: 540 × 653</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/light.jpg" width="300px" />
+                        <figcaption align="middle">Sunlit Road: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/light2.jpg" width="365px"/>
+                        <figcaption align="middle">Sunlit Road: 590 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>Here are some images expanded using vertical expansion.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/field.jpg" width="300px" />
+                        <figcaption align="middle">Field: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/field2.jpg" width="300px"/>
+                        <figcaption align="middle">Field: 490 × 467</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/flo.jpg" width="300px" />
+                        <figcaption align="middle">Flowers: 367 × 490</figcaption>
+                        <td align="right">
+                        <img src="img/flo2.jpg" width="300px"/>
+                        <figcaption align="middle">Flowers: 367 × 590</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div class="space"></div>
+                
+        <h2 align="left">Object Cutting</h2>
+            <div class="break"></div>
+            <p>Seam Carving can also be used to remove objects from images. This can be done by causing the energy function to apply low values to the area for removal and then applying seam carving for the width/height of the object to be removed and then applying seam expansion to the image to return the image to its original width/height. I implemented this by creating a mask where the white areas are to be removed and the black areas are to be kept. I then multiplied this mask by -1000 and added it to the resulting image of the energy function. I then ran the seam carving and seam expansion algorithms to the image.</p>
+            <p>Here are some examples of my object cutting algorithm using horizontal seams in action. Horizontal seams were used because using vertical seams either produced images that were indistinguishable from the resulting images using horizontal seams or they didn't work.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/ball.jpg" width="300px" />
+                        <figcaption align="middle">Field Original</figcaption>
+                        <td align="right">
+                        <img src="img/mask.jpg" width="300px"/>
+                        <figcaption align="middle">Single Balloon Mask</figcaption>
+                        <td align="right">
+                        <img src="img/ball2.jpg" width="300px"/>
+                        <figcaption align="middle">Field With Removed Balloon</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/ball.jpg" width="300px" />
+                        <figcaption align="middle">Field Original</figcaption>
+                        <td align="right">
+                        <img src="img/mask2.jpg" width="300px"/>
+                        <figcaption align="middle">Pipe Mask</figcaption>
+                        <td align="right">
+                        <img src="img/ballh3.jpg" width="300px"/>
+                        <figcaption align="middle">Field With Removed Pipe</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/ball.jpg" width="300px" />
+                        <figcaption align="middle">Field Original</figcaption>
+                        <td align="right">
+                        <img src="img/mask3.jpg" width="300px"/>
+                        <figcaption align="middle">Balloons Mask</figcaption>
+                        <td align="right">
+                        <img src="img/ballh4.jpg" width="300px"/>
+                        <figcaption align="middle">Field With Removed Balloons</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/cow.jpg" width="300px" />
+                        <figcaption align="middle">Cows Orignal</figcaption>
+                        <td align="right">
+                        <img src="img/mask5.jpg" width="300px"/>
+                        <figcaption align="middle">Car Mirror Mask</figcaption>
+                        <td align="right">
+                        <img src="img/cow2.jpg" width="300px"/>
+                        <figcaption align="middle">Cows With Removed Mirror</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>For this image I tried object removal with both horizontal and vertical seams. Vertical seams worked better than the horizontal ones because fewer vertical seams needed to be removed to remove the object than horizontal seams. When horizontal seams were removed the bushed and trees in the back ground got stretched. Since the panel wasn't that long the effect wasn't that strong but if the panel were longer this effect would be increased.<p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="left">
+                        <img src="img/field.jpg" width="300px" />
+                        <figcaption align="middle">Field</figcaption>
+                        <td align="right">
+                        <img src="img/mask7.jpg" width="300px"/>
+                        <figcaption align="middle">Panel Mask</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/fieldv2.jpg" width="300px"/>
+                        <figcaption align="middle">Removed with Vertical Seams</figcaption>
+                        <td align="right">
+                        <img src="img/fieldh2.jpg" width="300px"/>
+                        <figcaption align="middle">Removed with Horiztonal Seams</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div class="space"></div>
+
+        <h2 align="left">Failures</h2>
+            <div class="break"></div>
+            <p>Even though these algorithms produced many great results, when applied to some images they weren't as successful.</p>
+            <p>For this image, if I tried to use horizontal seams to decrease the width too much, part of the Campanile began to get removed. This is because the light towards the bottom of the tower begins to blend it into the sky.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/camp.jpg" width="300px"/>
+                        <figcaption align="middle">UC Berkeley Campanile: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/failh.jpg" width="185px"/>
+                        <figcaption align="middle">UC Berkeley Campanile: 300 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>For this image, if I tried to decrease the height with vertical seam carving, the tile and cats began to warp. This is because tiled patterns make it hard to find low energy seams that keep the tiles' original pattern.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/cats.jpg" width="300px"/>
+                        <figcaption align="middle">Eating Cats: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/fail4.jpg" width="300px"/>
+                        <figcaption align="middle">Eating Cats: 490 × 350</figcaption>
+                     </tr>
+                </table>
+            </div> 
+            <p>For this image, if I tried to increase the width with horizontal seam carving, the right cat began to stretch strangely. This is because tiled patterns and the rest of the cats have higher energy vaules than the white cat belly on the white tile.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/cats.jpg" width="300px"/>
+                        <figcaption align="middle">Eating Cats: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/fail3.jpg" width="390px"/>
+                        <figcaption align="middle">Eating Cats: 640 × 653</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>For this image, if I tried to increase the height with vertical seam carving, the cars and street looked like they were melting. This is because the image had a horiztonal structure and didn’t have any clear vertical seams that wouldn't bend the light.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/light.jpg" width="300px"/>
+                        <figcaption align="middle">Sunlit Road: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/fail5.jpg" width="300px"/>
+                        <figcaption align="middle">Sunlit Road: 590 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>For this image, if I tried to remove the butterfly with horizontal seam carving, the rocks got stretched and warped. This is because the rock caused the image not to have any clear horizontal seams.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/butter.jpg" width="300px"/>
+                        <figcaption align="middle">Butterfly: 490 × 653</figcaption>
+                        <td align="right">
+                        <img src="img/fail2.jpg" width="300px"/>
+                        <figcaption align="middle">Butterfly: 490 × 653</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <p>For this image, if I tried to remove the mirror with vertical seam carving, the sky stretched down to the ground on the left. This is because the vertical seams that are removed are from the mirror area but when the image is then expanded the sky has a lower energy level, which causes it to take the place of the lost mirror pixels on the left.</p>
+            <div align="left">
+                <table style="width=100%">
+                    <tr>
+                        <td align="right">
+                        <img src="img/cow.jpg" width="300px"/>
+                        <figcaption align="middle">Cows: 490 × 367</figcaption>
+                        <td align="right">
+                        <img src="img/fail1.jpg" width="300px"/>
+                        <figcaption align="middle">Cows: 490 × 367</figcaption>
+                     </tr>
+                </table>
+            </div>
+            <div class="space"></div>
+
+        <h2 align="left">Things Learned</h2>
+            <div class="break"></div>
+            <p>From this project I learned the importance of choosing the correct direction for which to remove or add seams with seam carving. For images with horizontal structure horizontal seams should be removed or added and vice versa. This helps keep the image's perspective in tact. I also learned that images with very detailed backgrounds and less detailed focal objects will suffer from seam carving/expansion. This is because the lowest energy seams will be found through the main object and cause stretching and carving artifacts.</p>
+            <div class="space"></div>
+    </div>
+
+</div>
+</body>
+</html>
+
+
+
+
